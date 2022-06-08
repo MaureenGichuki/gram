@@ -7,6 +7,7 @@ from .forms import DetsForm, PostsForm, CommentsForm
 from django.db.models import F
 from django.contrib.auth import logout as django_logout
 from django.template import RequestContext
+from django.http.response import HttpResponseNotFound
 
 def welcome(request):
     return render(request, 'welcome.html')
@@ -106,7 +107,7 @@ def search(request):
             message = f"{search_term}"
             return render(request, 'search_results.html',{"profile_user": searched_user,"posts":posts,"followingcount":followingcount,"followercount":followercount})
         else:
-            message = "The username does not exist."
+            message = "The username does not exist"
             return render(request, 'error.html',{"message":message})
 
 @login_required(login_url='/accounts/login/')
