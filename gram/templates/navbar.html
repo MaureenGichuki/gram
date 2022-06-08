@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div class="nav sticky-top" role="navigation" id="colored-nav">
+        <div class="container-fluid">
+            <div class="nav navbar-nav navbar-left">
+                <ul class="nav">
+                    <li>
+                        <a href="{%url 'timeline' %}">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{%url 'timeline' %}" class="nav-link" id="logo">The SocialGram</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{%url 'profiles' %}" role="search" class="form-inline">
+                            <input type="text" class="form-control" placeholder="Search by username"
+                                name="username">
+                        </form>
+                    </li>
+                    <li id="icon">
+                        <a href="" class="nav-link">
+                            <i class="fas fa-compass"></i>
+                        </a>
+                    </li>
+                    <li id="icon">
+                        <a href="" class="nav-link" id="heart">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    </li>
+                    <li class="dropdown" id="icon">
+                        <a href="" class="nav-link" lass="dropdown-toggle btn btn-default" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        {% if user.is_authenticated %}
+                            <ul class="dropdown-menu" role="menu">
+                              <li>
+                                <a href="{%url 'profile' %}">Account</a>
+                              </li>
+                              <li>
+                                <a href="/logout">Logout</a>
+                              </li>
+                            </ul>
+                        {% else %}
+                        <li>
+                          <a class='btn btn-default' href="/accounts/login">Login</a>
+                        </li>
+            
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

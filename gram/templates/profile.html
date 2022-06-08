@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid" id="profile">
+    <div class="row" id="top">
+        <div class="col-sm-1 col-md-2" >
+            <p>FOLLOWING</p>
+            <p>{{followingcount}}</p>
+        </div>
+        <div class="col-sm-1 col-md-2">
+            <p>FOLLOWERS</p>
+            <p>{{followerscount}}</p>
+        </div>
+        <div class="col-sm-2 col-md-4">
+            {% if user.profile.profile_pic.url %}
+            <img src="{{user.profile.profile_pic.url}}" alt="" class="img-fluid">
+            {% else %}
+            <form  action="{%url 'profile' %}" method="post" enctype="multipart/form-data">            
+                {% bootstrap_form form layout='inline'%}
+                {% csrf_token %}
+
+                <input type="submit" class="btn-lg btn-outline-info" value="Add Profile">
+            </form>
+            {% endif %}
+            <h3>@{{user.username}}</h3>
+        </div>
+        <div class="col-sm-1 col-md-2">
+            <button type="button" class="btn-lg btn-outline-success">FOLLOW</button>
+        </div>
+    </div>
+    <div>
+        <p>{{user.profile.bio}}</p>
+    </div>
+    <div class="nav navbar-nav" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            </div>
+            <div class="nav navbar-nav navbar-right">
+                <ul class="nav" id="mynav">
+                    <li class="nav-item" id="first">
+                        <i class="fab fa-instagram"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'timeline' %}">
+                            <i class="fas fa-th"></i> Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="{%url 'edit' %}">
+                            <i class="fas fa-cog"></i> Edit Profile</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="parent">
+            <div id="child">
+                <div id="post">
+                    <form  action="{%url 'profile' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        {% bootstrap_field field %} 
+                        <input type="submit" class="btn-lg btn-outline-info" value="New Post">
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+            {% for post in posts %}
+                {% if user.profile.id == post.profile.id %}
+                <div id="child">
+                    <img src="{{post.pic.url}}" alt="" id="post" class="img-fluid">
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+</div>
+{% endblock %}
