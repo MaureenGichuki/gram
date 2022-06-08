@@ -1,11 +1,22 @@
-{% extends 'registration/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
+<style>
+    *{
+    background-image: url("https://images.pexels.com/photos/3032139/pexels-photo-3032139.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+    background-attachment: fixed;
+    background-size: cover; 
+    } 
+</style>
 <div class="container-fluid">
-    <div class="row" id="main">
-                    <h4 class="card-title" id="logo">The SocialGram</h4>
-                    <div class="row">
-                                <a href="/accounts/login" class="btn btn-outline-info">Log In</a>
-                            <h5>Don't have an account? <a href="/accounts/register">Sign up</a></h5>
+    <i class="fab fa-instagram"></i>
+    <p class="titl" id="logo">The SocialGram</p>
+    </div>
+        <div class="row" id="main">
+            <div class="card" id="lg">
+                <p class="ttl" id="logo">The SocialGram</p>
+                <a href="/accounts/login" class="btn btn-outline-info">Log In</a>
+                <p>Don't have an account?</p>
+                <a href="/accounts/register" class="btn btn-outline-info">Sign up</a>
         </div>
     </div>
 </div>

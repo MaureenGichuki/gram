@@ -10,6 +10,7 @@
             <img src="{{user.profile.profile_pic.url}}" alt="" id="profilepic" class="img-fluid">
             <form  action="{%url 'edit'%}" method="post" enctype="multipart/form-data">              
                   {% bootstrap_form form layout='inline'%}
+                  {% csrf_token %}
                   <input type="submit" class="btn-lg btn-outline-info" value="Update">
             </form>
             <div>
@@ -25,7 +26,7 @@
                         <i class="fab fa-instagram"></i>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/timeline">
+                        <a class="nav-link" href="/main">
                             <i class="fas fa-th"></i> Posts</a>
                     </li>
                     <li class="nav-item">

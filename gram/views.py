@@ -3,10 +3,10 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Profile,Post,Following,Comment
-from .forms import DetsForm, PostsForm
+from .forms import DetsForm, PostsForm, CommentsForm
 from django.db.models import F
 from django.contrib.auth import logout as django_logout
-
+from django.template import RequestContext
 
 def welcome(request):
     return render(request, 'welcome.html')
@@ -21,27 +21,33 @@ def profile(request):
     followerscount=len(followers)
     if request.method == 'POST':
         form1 = DetsForm(request.POST, request.FILES)
-        form2 = PostsForm(request.POST, request.FILES)
         if form1.is_valid():
             profile = form1.save(commit=False)
             profile.user = current_user
             profile.save()
 
-        if form2.is_valid():
-            post = form2.save(commit=False)
-            post.profile = current_user.profile
-            post.save()
-
         return redirect('profile')
 
     else:
         form1 = DetsForm()
-        form2 = PostsForm()
     
-    return render(request, 'profile.html', {"form":form1,"form2":form2,"posts":posts,"followingcount":followingcount,"followerscount":followerscount})
+    return render(request, 'profile.html', {"form1":form1,"posts":posts,"followingcount":followingcount,"followerscount":followerscount})
 
 @login_required(login_url='/accounts/login/')
-def timeline(request):
+def post(request):
+    if request.method == "POST":
+        form2=PostsForm(data=request.POST,files=request.FILES)
+        if form2.is_valid():
+            form2.save()
+            obj=form2.instance
+        return redirect(request,"main",{"obj":obj})
+    else:
+          form2=PostsForm()
+          img=Post.objects.all()
+    return render(request,"newpost.html",{"img":img,"form":form2})
+
+@login_required(login_url='/accounts/login/')
+def main(request):
     users = User.objects.all()
     posts = Post.objects.all()
     follows = Following.objects.all()
@@ -49,7 +55,7 @@ def timeline(request):
     if request.method=='POST' and 'follow' in request.POST:
         following=Following(username=request.POST.get("follow"),followed=request.user.username)
         following.save()
-        return redirect('timeline')
+        return redirect('main')
     elif request.method=='POST' and 'comment' in request.POST:
         comment=Comment(comment=request.POST.get("comment"),
                         post=int(request.POST.get("posted")),
@@ -57,16 +63,16 @@ def timeline(request):
                         count=0)
         comment.save()
         comment.count=F('count')+1
-        return redirect('timeline')
+        return redirect('main')
     elif request.method=='POST' and 'post' in request.POST:
         posted=request.POST.get("post")
         for post in posts:
             if (int(post.id)==int(posted)):
                 post.like+=1
                 post.save()
-        return redirect('timeline')
+        return redirect('main')
     else:
-        return render(request, 'timeline.html',{"users":users,"follows":follows,"posts":posts,"comments":comments})
+        return render(request, 'main.html',{"users":users,"follows":follows,"posts":posts,"comments":comments})
 
 @login_required(login_url='/accounts/login/')
 def edit_profile(request):
@@ -87,16 +93,6 @@ def edit_profile(request):
     return render(request, 'edit_profile.html',{"form": form})
 
 @login_required(login_url='/accounts/login/')
-def other_profile(request,id):
-    profile_user=User.objects.filter(id=id).first()
-    posts=Post.objects.all()
-    following=Following.objects.filter(username=profile_user.username).all()
-    followingcount=len(following)
-    followers=Following.objects.filter(followed=profile_user.username).all()
-    followercount=len(followers)
-    return render(request, 'other_profile.html',{"profile_user": profile_user,"posts":posts,"followingcount":followingcount,"followercount":followercount})
-
-@login_required(login_url='/accounts/login/')
 def search(request):
     posts=Post.objects.all()
     if 'username' in request.GET and request.GET["username"]:
@@ -108,10 +104,25 @@ def search(request):
         searched_user = User.objects.filter(username=search_term).first()
         if searched_user:
             message = f"{search_term}"
-            return render(request, 'other_profile.html',{"profile_user": searched_user,"posts":posts,"followingcount":followingcount,"followercount":followercount})
+            return render(request, 'search_results.html',{"profile_user": searched_user,"posts":posts,"followingcount":followingcount,"followercount":followercount})
         else:
             message = "The username does not exist."
             return render(request, 'error.html',{"message":message})
+
+@login_required(login_url='/accounts/login/')
+def comment(request):
+    post = Post.objects.all()
+    comments = post.comments.get(active=True)
+
+    if request.method == 'POST':
+        comment_form = CommentsForm(data=request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.post = post
+            new_comment.save()
+    else:
+        comment_form = CommentsForm()                   
+    return render(request, 'post_detail.html',{'post': post, 'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form})
 
 @login_required(login_url='/accounts/login/')
 def logout(request):

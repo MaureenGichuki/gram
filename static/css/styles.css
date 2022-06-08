@@ -1,0 +1,38 @@
+#lg{
+    padding: 100px;
+    color:white;
+    border-color: white;
+    border-radius: 20px;
+}
+.titl{
+    font-size: 20px;
+    color:cyan;
+}
+.titlee{
+    font-size: 20px;
+    text-align: center;
+}
+.ttl{
+    font-size: 15px;
+    font-style: italic;
+
+}
+form{
+    padding: 200px;
+    align-self: center;
+    background-color: white;
+
+}
+#main{
+    padding: 50px;
+}
+.icn{
+    justify-content: space-between;
+}
+#nav{
+    justify-content: space-around;
+    background-color: darkmagenta;
+}
+li{
+    list-style: none;
+}

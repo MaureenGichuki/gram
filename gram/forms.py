@@ -11,7 +11,7 @@ class PostsForm(forms.ModelForm):
         model = Post
         fields = ["pic", "caption"]
 
-class comments(forms.ModelForm):
+class CommentsForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["comment"]
